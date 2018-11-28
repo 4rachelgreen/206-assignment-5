@@ -5,6 +5,45 @@ date: "November 27, 2018"
 output: html_document
 ---
 
+Setup Code:
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(car)
+library(userfriendlyscience)
+library(knitr)
+library(kableExtra)
+library(effsize)
 ```
+
+Problem 1:
+```{r}
+
+```
+
+Problem 2:
+```{r}
+
+```
+
+Problem 3:
+```{r}
+
+```
+
+Problem 4:
+```{r}
+
+```
+
+Problem 5:
+```{r}
+
+```
+
+
+
+
+
+
+
