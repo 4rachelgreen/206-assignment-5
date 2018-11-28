@@ -20,32 +20,48 @@ ms = read_csv("median_salary_doctoral_recipients.csv")
 pf = read_csv("phds_by_field_1985_2015.csv")
 ```
 
-Problem 1:
+Problem 1 (Jeremy):
 ```{r}
 
 ```
-
-Problem 2:
-```{r}
-
-```
-
-Problem 3:
-```{r}
-
-```
-
-Problem 4:
-```{r}
-
-```
-
-Problem 5:
+Problem 1 (Michael):
 ```{r}
 
 ```
 
 
+Problem 2 (Rachel):
+```{r}
+
+```
+Problem 2 (Michael):
+```{r}
+
+```
+
+
+Problem 3 (Rachel):
+```{r}
+
+```
+Problem 3 (Jeremy):
+```{r}
+
+```
+
+
+Problem 4 (Rachel):
+```{r}
+
+```
+Problem 4 (Michael):
+```{r}
+
+```
+Problem 4 (Jeremy):
+```{r}
+
+```
 
 
 
