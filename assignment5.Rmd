@@ -14,6 +14,10 @@ library(userfriendlyscience)
 library(knitr)
 library(kableExtra)
 library(effsize)
+fs = read_csv("faculty_salary_data_2008_2009_survey.csv")
+ge = read_csv("grad_enrollment.csv")
+ms = read_csv("median_salary_doctoral_recipients.csv")
+pf = read_csv("phds_by_field_1985_2015.csv")
 ```
 
 Problem 1:
