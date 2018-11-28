@@ -46,7 +46,19 @@ Problem 3 (Rachel):
 ```
 Problem 3 (Jeremy):
 ```{r}
+hist_emp_m = ggplot(ms, aes(ms$employment_male)) + geom_histogram()
+hist_emp_f = ggplot(ms, aes(ms$employment_femalem)) + geom_histogram()
+hist_post_m = ggplot(ms, aes(ms$postdoc_male)) + geom_histogram()
+hist_post_f = ggplot(ms, aes(ms$postdoc_female)) + geom_histogram()
 
+ftest_emp = var.test(ms$employment_male,ms$employment_female) # p=.88 thus variances are equal
+ftest_post = var.test(ms$postdoc_male,ms$postdoc_female) # p=.85 thus variances are equal
+
+ttest_emp = t.test(ms$employment_male,ms$employment_female, var.equal = T)
+ttest_emp
+
+ttest_post = t.test(ms$postdoc_male,ms$postdoc_female, var.equal = T)
+ttest_post
 ```
 
 
