@@ -1,4 +1,4 @@
-faculty_ank,discipline,years_since_PhD,years_faculty_service,sex,salary
+faculty_rank,discipline,years_since_PhD,years_faculty_service,sex,salary
 Prof,B,19,18,Male,139750
 Prof,B,20,16,Male,173200
 AsstProf,B,4,3,Male,79750
