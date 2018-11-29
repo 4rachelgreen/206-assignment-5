@@ -32,7 +32,23 @@ Problem 1 (Michael):
 
 Problem 2 (Rachel):
 ```{r}
+pf_fem <- pf %>% 
+  filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F")
+phd_shifts <- pf_fem %>% 
+  ggplot(aes(x = year, y = number)) +
+  geom_col(aes(fill = field), position = "dodge") +
+  scale_x_continuous(expand=c(0,0), breaks = seq(1985,2015, by=15)) +
+  scale_y_continuous(expand=c(0,0)) +
+  theme_classic() +
+  labs(
+    x = "Year",
+    y = "Female PhDs Awarded"
+  )
+phd_shifts
 
+#chi-square (need to work on)
+#phd_chi <- chisq.test(pf_fem) 
+#phd_chi
 ```
 Problem 2 (Michael):
 ```{r}
@@ -97,7 +113,34 @@ ttest_post
 
 Problem 4 (Rachel):
 ```{r}
+# correlation of years since phd and years faculty service
+yrs_corr <- fs %>% 
+  ggplot(aes(x = years_since_PhD, y = years_faculty_service)) +
+  geom_point(aes(color = sex), alpha = 0.5)
+yrs_corr
+#correlation years faculty service vs salary
+service_corr <- fs %>% 
+  ggplot(aes(x = years_faculty_service, y = salary)) +
+  geom_point(aes(color = sex), alpha = 0.5)
+service_corr
 
+# Rank: reference level = profesor
+fs$faculty_rank <- factor(fs$faculty_rank)
+fs$faculty_rank <- fct_relevel(fs$faculty_rank, "Prof")
+# aggregate model 
+salary_lm1 <- lm(salary ~ faculty_rank + years_since_PhD + years_faculty_service + sex + discipline, data = fs)
+vif(salary_lm1)
+# years since PhD = 7.5
+# years faculty service = 5.9
+# others less than 4
+# years since phd and years faculty service is a bit redundant so don't need both?
+salary_lm2 <- lm(salary ~ faculty_rank + years_faculty_service + sex + discipline, data = fs)
+vif(salary_lm2)
+#AIC on both models 
+AIC(salary_lm1) #9094
+AIC(salary_lm2) #9097
+#lm1 has a lower AIC, but need to use judgmement do decide (look more into papers, think about whether service and years since phd are both needed)
+```
 ```
 Problem 4 (Michael):
 ```{r}
