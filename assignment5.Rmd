@@ -14,7 +14,6 @@ library(userfriendlyscience)
 library(knitr)
 library(kableExtra)
 library(effsize)
-library(stargazer)
 fs = read_csv("faculty_salary_data_2008_2009_survey.csv")
 ge = read_csv("grad_enrollment.csv")
 ms = read_csv("median_salary_doctoral_recipients.csv")
@@ -43,12 +42,45 @@ Problem 2 (Michael):
 
 Problem 3 (Rachel):
 ```{r}
+#absolute difference in medians
+#Employed Male/Female
+emp_m_median <- median(ms$employment_male) #75167
+emp_f_median <- median(ms$employment_female) #71750
+emp_m_median - emp_f_median #3417
+#Postdoc Male/Female
+post_m_median <- median(ms$postdoc_male) #4800
+post_f_median <- median(ms$postdoc_female) #4500
+post_m_median - post_f_median # 3000
 
+hist_emp_m = ggplot(ms, aes(ms$employment_male)) + geom_histogram()
+qq_emp_m = ggplot(ms, aes(sample = ms$employment_male)) + geom_qq()
+
+hist_emp_f = ggplot(ms, aes(ms$employment_female)) + geom_histogram()
+qq_emp_f = ggplot(ms, aes(sample = ms$employment_female)) + geom_qq()
+
+hist_post_m = ggplot(ms, aes(ms$postdoc_male)) + geom_histogram()
+qq_post_m = ggplot(ms, aes(sample = ms$postdoc_male)) + geom_qq()
+
+hist_post_f = ggplot(ms, aes(ms$postdoc_female)) + geom_histogram()
+qq_post_f = ggplot(ms, aes(sample = ms$postdoc_female)) + geom_qq()
+
+ftest_emp = var.test(ms$employment_male,ms$employment_female) # p=.88 thus variances are equal
+ftest_post = var.test(ms$postdoc_male,ms$postdoc_female) # p=.85 thus variances are equal
+
+#Mann-Whitney U
+mwu_emp = wilcox.test(ms$employment_male,ms$employment_female)
+mwu_emp # p = 0.3289 (not significant, ranks are equal)
+
+mwu_post = wilcox.test(ms$postdoc_male,ms$postdoc_female)
+mwu_post # p = 0.8671 (not significant, ranks are equal)
+
+effsize_emp = cohen.d(ms$employment_male,ms$employment_female) # d estimate = 0.26 (small)
+effsize_post = cohen.d(ms$postdoc_male,ms$postdoc_female) # d estimate = 0.04 (negligible)
 ```
 Problem 3 (Jeremy):
 ```{r}
 hist_emp_m = ggplot(ms, aes(ms$employment_male)) + geom_histogram()
-hist_emp_f = ggplot(ms, aes(ms$employment_femalem)) + geom_histogram()
+hist_emp_f = ggplot(ms, aes(ms$employment_female)) + geom_histogram()
 hist_post_m = ggplot(ms, aes(ms$postdoc_male)) + geom_histogram()
 hist_post_f = ggplot(ms, aes(ms$postdoc_female)) + geom_histogram()
 
@@ -65,27 +97,6 @@ ttest_post
 
 Problem 4 (Rachel):
 ```{r}
-hist_emp_m = ggplot(ms, aes(ms$employment_male)) + geom_histogram()
-qq_emp_m = ggplot(ms, aes(ms$employment_male)) + geom_qq()
-
-hist_emp_f = ggplot(ms, aes(ms$employment_femalem)) + geom_histogram()
-qq_emp_f = ggplot(ms, aes(ms$employment_femalem)) + geom_qq()
-
-hist_post_m = ggplot(ms, aes(ms$postdoc_male)) + geom_histogram()
-qq_post_m = ggplot(ms, aes(ms$postdoc_male)) + geom_qq()
-
-hist_post_f = ggplot(ms, aes(ms$postdoc_female)) + geom_histogram()
-qq_post_f = ggplot(ms, aes(ms$postdoc_female)) + geom_qq()
-
-ftest_emp = var.test(ms$employment_male,ms$employment_female) # p=.88 thus variances are equal
-ftest_post = var.test(ms$postdoc_male,ms$postdoc_female) # p=.85 thus variances are equal
-
-ttest_emp = t.test(ms$employment_male,ms$employment_female, var.equal = T)
-ttest_emp
-
-ttest_post = t.test(ms$postdoc_male,ms$postdoc_female, var.equal = T)
-ttest_post
-
 
 ```
 Problem 4 (Michael):
