@@ -50,18 +50,17 @@ ge_fullpred <- cbind(ge_adddecyear, predict_m, predict_f)
 
 # plot
 ge_plot <- ggplot(ge_fullpred, aes(x = year, y = total_females)) +
-  geom_ribbon(aes(ymin = fit.lwr_f, ymax = fit.upr_f), fill = "gray70", alpha = 0.5) +
-  geom_ribbon(aes(ymin = fit.lwr_m, ymax = fit.upr_m), fill = "gray70", alpha = 0.5) +
-  geom_point(color = "red") +
-  geom_point(aes(x = year, y = total_males), color = "blue") + 
-  geom_line(aes(x = year, y = fit.fit_f), color = "red") +
-  geom_line(aes(x = year, y = fit.fit_m), color = "blue") +
-  #geom_smooth(method = lm_gem1, se = T, size = 0.5, color = "gray20") +
-  #geom_line(aes(x = year, y = fit.lwr_f)) +
-  #geom_line(aes(x = year, y = fit.lwr_m)) +
-  #geom_line(aes(x = year, y = fit.upr_f)) +
-  #geom_line(aes(x = year, y = fit.upr_m)) +
-  theme_bw()
+  geom_ribbon(aes(ymin = fit.lwr_f, ymax = fit.upr_f), fill = "tomato3", alpha = 0.35) +
+  geom_ribbon(aes(ymin = fit.lwr_m, ymax = fit.upr_m), fill = "steelblue3", alpha = 0.35) +
+  geom_point(color = "tomato2") +
+  geom_point(aes(x = year, y = total_males), color = "steelblue3") + 
+  geom_line(aes(x = year, y = fit.fit_f), color = "tomato2") +
+  geom_line(aes(x = year, y = fit.fit_m), color = "steelblue3") +
+  scale_x_continuous(limits = c(1965, 2015), expand=c(0,0)) +
+  scale_y_continuous(limits = c(-100000, 2100000), expand=c(0,0)) +
+  labs(y = "Total enrollment", x = "Year") +
+  theme(legend.position = "top") +
+  theme_classic()
 
 ge_plot
 ```
@@ -89,7 +88,14 @@ phd_shifts
 ```
 Problem 2 (Michael):
 ```{r}
+pf_f <- pf %>% 
+  filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F") %>%
+  select(field, year, number) %>%
+  spread(year, n)
 
+# chi square
+pf_chisq <- chisq.test(pf_f)
+pf_chisq
 ```
 
 
