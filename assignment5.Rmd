@@ -14,6 +14,7 @@ library(userfriendlyscience)
 library(knitr)
 library(kableExtra)
 library(effsize)
+library(ggrepel)
 fs = read_csv("faculty_salary_data_2008_2009_survey.csv")
 ge = read_csv("grad_enrollment.csv")
 ms = read_csv("median_salary_doctoral_recipients.csv")
@@ -22,16 +23,25 @@ pf = read_csv("phds_by_field_1985_2015.csv")
 
 Problem 1 (Jeremy):
 ```{r}
-
+# Pink = "#0072B2" 
+# Blue = "#56B4E9"
+ge_trend = ggplot(ge, aes(x=year,y=total)) +
+  geom_line() +
+  geom_line(aes(y=fulltime_male)) +
+  geom_line(aes(y=parttime_male, colour = "parttime_male")) +
+  geom_text(aes(label = names(ge)))
+ge_trend
 ```
 Problem 1 (Michael):
 ```{r}
+
 
 ```
 
 
 Problem 2 (Rachel):
 ```{r}
+
 pf_fem <- pf %>% 
   filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F")
 phd_shifts <- pf_fem %>% 
@@ -53,11 +63,13 @@ phd_shifts
 Problem 2 (Michael):
 ```{r}
 
+
 ```
 
 
 Problem 3 (Rachel):
 ```{r}
+
 #absolute difference in medians
 #Employed Male/Female
 emp_m_median <- median(ms$employment_male) #75167
@@ -95,6 +107,7 @@ effsize_post = cohen.d(ms$postdoc_male,ms$postdoc_female) # d estimate = 0.04 (n
 ```
 Problem 3 (Jeremy):
 ```{r}
+
 hist_emp_m = ggplot(ms, aes(ms$employment_male)) + geom_histogram()
 hist_emp_f = ggplot(ms, aes(ms$employment_female)) + geom_histogram()
 hist_post_m = ggplot(ms, aes(ms$postdoc_male)) + geom_histogram()
@@ -141,15 +154,19 @@ AIC(salary_lm1) #9094
 AIC(salary_lm2) #9097
 #lm1 has a lower AIC, but need to use judgmement do decide (look more into papers, think about whether service and years since phd are both needed)
 ```
-```
+
 Problem 4 (Michael):
 ```{r}
 
 ```
+
 Problem 4 (Jeremy):
 ```{r}
 
 ```
+
+
+
 
 
 
