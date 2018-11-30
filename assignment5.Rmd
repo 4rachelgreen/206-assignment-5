@@ -38,19 +38,30 @@ summary(lm_gef1)
 # predict from model over the same time domain
 ge_year <- data.frame(year1 = c(0:48))
 ge_year$year <- c(1967:2015)
-predict_m <- predict(lm_gem1, newdata = ge_year, se.fit = TRUE, interval="confidence")
-predict_f <- predict(lm_gef1, newdata = ge_year, se.fit = TRUE, interval="confidence")
+predict_m <- as.data.frame(predict(lm_gem1, newdata = ge_year, se.fit = TRUE, interval="confidence"))
+predict_f <- as.data.frame(predict(lm_gef1, newdata = ge_year, se.fit = TRUE, interval="confidence"))
+names(predict_m) <- paste(names(predict_m), "m", sep = "_")
+names(predict_f) <- paste(names(predict_f), "f", sep = "_")
 
-ge_predm <- cbind(ge_year, predict_m)
-ge_predf <- cbind(ge_year, predict_f)
+ge_fullpred <- cbind(ge_adddecyear, predict_m, predict_f)
+
+#ge_predm <- cbind(ge_year, predict_m)
+#ge_predf <- cbind(ge_year, predict_f)
 
 # plot
-ge_plot <- ggplot(ge_adddecyear, aes(x = year, y = total_females)) +
-  geom_point() +
-  geom_point(aes(x = year, y = total_males)) + 
+ge_plot <- ggplot(ge_fullpred, aes(x = year, y = total_females)) +
+  geom_ribbon(aes(ymin = fit.lwr_f, ymax = fit.upr_f), fill = "gray70", alpha = 0.5) +
+  geom_ribbon(aes(ymin = fit.lwr_m, ymax = fit.upr_m), fill = "gray70", alpha = 0.5) +
+  geom_point(color = "red") +
+  geom_point(aes(x = year, y = total_males), color = "blue") + 
+  geom_line(aes(x = year, y = fit.fit_f), color = "red") +
+  geom_line(aes(x = year, y = fit.fit_m), color = "blue") +
   #geom_smooth(method = lm_gem1, se = T, size = 0.5, color = "gray20") +
-  geom_ribbon(ge_predm, aes(ymin = )) +
-  theme_classic()
+  #geom_line(aes(x = year, y = fit.lwr_f)) +
+  #geom_line(aes(x = year, y = fit.lwr_m)) +
+  #geom_line(aes(x = year, y = fit.upr_f)) +
+  #geom_line(aes(x = year, y = fit.upr_m)) +
+  theme_bw()
 
 ge_plot
 ```
