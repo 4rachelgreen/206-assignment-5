@@ -184,10 +184,17 @@ pf_chisqf
 pf_fplt <- pf %>% 
   filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F") %>%
   select(field, year, number)
+pf_fplt$year <- as.character(pf_fplt$year)
 
 pf_plt <- ggplot(pf_fplt, aes(x = field, y = number)) +
   geom_col(aes(fill = year), position = "dodge") +
-  theme_classic()
+  theme_classic() +
+  theme(legend.position = "top") +
+  labs(
+    x = "Field",
+    y = "PhDs awarded to females"
+  ) +
+  scale_y_continuous(expand=c(0,0))
 pf_plt
 ```
 
