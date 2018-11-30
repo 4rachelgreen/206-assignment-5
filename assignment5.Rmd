@@ -23,14 +23,87 @@ pf = read_csv("phds_by_field_1985_2015.csv")
 
 Problem 1 (Jeremy):
 ```{r}
-# Pink = "#0072B2" 
-# Blue = "#56B4E9"
-ge_trend = ggplot(ge, aes(x=year,y=total)) +
-  geom_line() +
-  geom_line(aes(y=fulltime_male)) +
-  geom_line(aes(y=parttime_male, colour = "parttime_male")) +
-  geom_text(aes(label = names(ge)))
-ge_trend
+total_males <- ge %>% 
+  select(year, total_males) %>% 
+  mutate(total = total_males) %>% # 
+  mutate(sex = rep("male", length(total_males))) %>% 
+  select(year, total, sex)
+total_females <- ge %>% 
+  select(year, total_females) %>% 
+  mutate(total = total_females) %>% 
+  mutate(sex = rep("female", length(total_females))) %>% 
+  select(year, total, sex)
+total <- rbind(total_males, total_females)
+
+total_enroll_plot <- ggplot(total, aes(x = year, y = total, shape = sex, color = sex)) +
+  geom_point(size = 2, alpha = 0.5) +
+  geom_smooth(method = "lm") +
+  theme_classic() +
+  theme(panel.border = element_rect(colour = "black", fill = NA, size = 0.7)) +
+  labs(x = "Year", y = "Total Male & Female Graduate Student \nEnrollment in the U.S.") +
+  scale_y_continuous() +
+  scale_color_manual(values = c("grey11", "gray48")) +
+  annotate("text", 
+           x = 2010, 
+           y = 940000, 
+           label = "y = 9.42e-05x + 1.9e03", 
+           family = "Times New Roman", 
+           size = 3) +
+  annotate("text", 
+           x = 2010, 
+           y = 880000, 
+           label = "italic(R)^2 == 0.85", 
+           parse = TRUE, 
+           family = "Times New Roman", 
+           size = 3) +
+  annotate("text", 
+           x = 1999, 
+           y = 1600000, 
+           label = "y = 3.26e-05x + 1.96e03", 
+           family = "Times New Roman", 
+           size = 3) +
+  annotate("text", 
+           x = 1999, 
+           y = 1550000, 
+           label = "italic(R)^2 == 0.98", 
+           parse = TRUE, 
+           family = "Times New Roman", 
+           size = 3) 
+total_enroll_plot
+# Figure 1. Relationship between year and graduate student enrollment for both males and females (1967-2015). Year significantly predicts graduate student enrollment in the U.S. for both males (*b* = 9.42e-05, t(47) = 16.61, *p* <0.001) and females (*b* = 3.26e-05, t(47) = 51.66, *p* < 0.001) with a strong positive correlation between year and both sexes (Pearson's *r* (males) = 0.92, Pearson's *r* (females) =  0.99). The overall models (male enrollment = 9.42e-05(year) + 1.9e03, female enrollment = 3.26e-05(year) + 1.96e03) explain a significant amount of variance in salary for males (F(1,47) = 276, *p* < 0.001), R^2^ = 0.85 and females (F(1.9,47) = 2669, *p* < 0.001, R^2^ = 0.98). Gray region is the 95% confidence interval for the mean predicted values.
+
+# lm for males
+enrollment_males_lm <- lm(year ~ total, data = total_males)
+summary(enrollment_males_lm)
+cor.test(total_males$total, total_males$year) 
+# lm for females
+enrollment_females_lm <- lm(year ~ total, data = total_females)
+summary(enrollment_females_lm)
+cor.test(total_females$total, total_females$year) 
+
+
+m_1967 <- total_males %>% # subset 1967 males
+  filter(year == 1967)
+m_2015 <- total_males %>% # subset 2015 males
+  filter(year == 2015)
+net_males <- m_2015$total - m_1967$total # net increase from 1967-2015
+fold_males <- m_2015$total/m_1967$total # fold increase from 1967-2015
+perc_males <- ((m_2015$total - m_1967$total)/m_1967$total) * 100 # % increase from 1967 - 2015
+
+
+f_1967 <- total_females %>% # subset 1967 females
+  filter(year == 1967)
+f_2015 <- total_females %>% # subset 2015 females 
+  filter(year == 2015)
+net_females <- f_2015$total - f_1967$total # net increase from 1967-2015
+fold_females <- f_2015$total/f_1967$total # fold increase from 1967-2015
+perc_females <- ((f_2015$total - f_1967$total)/f_1967$total) * 100 # % increase from 1967 - 2015
+
+
+# since 1967, there has been a dramatic rise in female graduate student enrollment in the U.S. as compared to males
+# male enrollment has nearly doubled (1.9 fold), whereas female enrollment has seen a 6.5 fold increase
+# net increase in males was 59,0865; net increase in females was 1,453,562
+
 ```
 Problem 1 (Michael):
 ```{r}
