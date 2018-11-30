@@ -91,11 +91,23 @@ Problem 2 (Michael):
 pf_f <- pf %>% 
   filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F") %>%
   select(field, year, number) %>%
-  spread(year, n)
+  spread(year, number) %>%
+  select(-field)
 
-# chi square
-pf_chisq <- chisq.test(pf_f)
-pf_chisq
+rownames(pf_f) <- c("physical_science", "engineering", "education", "humanities")
+
+pf_chisqf <- chisq.test(pf_f)
+pf_chisqf
+
+pf_fplt <- pf %>% 
+  filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F") %>%
+  select(field, year, number)
+
+pf_plt <- ggplot(pf_fplt, aes(x = field, y = number)) +
+  geom_col(aes(fill = year), position = "dodge") +
+  theme_classic()
+
+pf_plt
 ```
 
 
