@@ -151,7 +151,18 @@ Problem 2 (Rachel):
 ```{r}
 
 pf_fem <- pf %>% 
-  filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F")
+  filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F") %>%
+  select(field, year, number) %>%
+  spread(year, number) %>%
+  select(-field)
+
+#p-value < 0.05, there is a significant effect of year on number of female students in each field 
+
+rownames(pf_fem) <- c("physical_science", "engineering", "education", "humanities")
+
+pf_chisqfem <- chisq.test(pf_fem)
+pf_chisqfem
+ 
 phd_shifts <- pf_fem %>% 
   ggplot(aes(x = year, y = number)) +
   geom_col(aes(fill = field), position = "dodge") +
@@ -236,6 +247,8 @@ mwu_post # p = 0.8671 (not significant, ranks are equal)
 
 effsize_emp = cohen.d(ms$employment_male,ms$employment_female) # d estimate = 0.26 (small)
 effsize_post = cohen.d(ms$postdoc_male,ms$postdoc_female) # d estimate = 0.04 (negligible)
+
+#even though absolute difference is not significant, males are still paid a higher salary than females
 ```
 Problem 3 (Jeremy):
 ```{r}
@@ -269,22 +282,47 @@ service_corr <- fs %>%
   geom_point(aes(color = sex), alpha = 0.5)
 service_corr
 
+#filter by discipline -- should we run models for each discipline?
+theoretical <- fs %>% 
+  filter(discipline == "A")
+
+applied <- fs %>% 
+  filter(discipline == "B")
+
 # Rank: reference level = profesor
 fs$faculty_rank <- factor(fs$faculty_rank)
 fs$faculty_rank <- fct_relevel(fs$faculty_rank, "Prof")
-# aggregate model 
+# everything model 
 salary_lm1 <- lm(salary ~ faculty_rank + years_since_PhD + years_faculty_service + sex + discipline, data = fs)
+plot(salary_lm1)
 vif(salary_lm1)
 # years since PhD = 7.5
 # years faculty service = 5.9
 # others less than 4
-# years since phd and years faculty service is a bit redundant so don't need both?
+# years since phd and years faculty service is a bit redundant so maybe we don't need both?
 salary_lm2 <- lm(salary ~ faculty_rank + years_faculty_service + sex + discipline, data = fs)
+plot(salary_lm2)
 vif(salary_lm2)
-#AIC on both models 
+#faculty rank, discipline, sex, years_since_PhD
+salary_lm3 <- lm(salary ~ faculty_rank + discipline + sex + years_since_PhD, data = fs)
+plot(salary_lm3)
+vif(salary_lm3)
+#sex, rank discipline
+salary_lm4 <- lm(salary ~ faculty_rank + discipline + sex, data = fs)
+plot(salary_lm4)
+vif(salary_lm4)
+#rank, discipline, years_since_PhD
+salary_lm5 <- lm(salary ~ faculty_rank + discipline + years_since_PhD, data = fs)
+plot(salary_lm5)
+vif(salary_lm5)
+
+#AIC on all models
 AIC(salary_lm1) #9094
 AIC(salary_lm2) #9097
 #lm1 has a lower AIC, but need to use judgmement do decide (look more into papers, think about whether service and years since phd are both needed)
+AIC(salary_lm3) #9097
+AIC(salary_lm4) #9095
+AIC(salary_lm5) #9096
 ```
 
 Problem 4 (Michael):
