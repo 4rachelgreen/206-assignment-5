@@ -350,12 +350,26 @@ fs_b <- fs %>%
 
 predsalary_a <- lm(salary ~ faculty_rank + years_since_PhD + years_faculty_service + sex, data = fs_a) # only theoretical
 plot(predsalary_a, which=c(2,1))
+AIC(predsalary_a)
 
 predsalary_b <- lm(salary ~ faculty_rank + years_since_PhD + years_faculty_service + sex, data = fs_b) # only applied
 plot(predsalary_b, which=c(2,1))
+AIC(predsalary_b)
 
 # heteroskedasticity seems to come mostly from applied faculty. Have two different models? 
+# now take years since phd out
 
+predsalary_a_simp1 <- lm(salary ~ faculty_rank + years_faculty_service + sex, data = fs_a) # only theoretical
+plot(predsalary_a_simp1, which=c(2,1))
+AIC(predsalary_a_simp1)
+
+predsalary_b_simp1 <- lm(salary ~ faculty_rank + years_faculty_service + sex, data = fs_b) # only applied
+plot(predsalary_b_simp1, which=c(2,1))
+AIC(predsalary_b_simp1)
+
+
+# AIC is larger for theoretical, only slightly smaller for applied.
+# I think it is best to run different models for applied and theoretical, as their variances are different and they respond differently to years_since_phd and years_faculty_service
 ```
 
 Problem 4 (Jeremy):
