@@ -198,15 +198,20 @@ pf_fplt <- pf %>%
 pf_fplt$year <- as.character(pf_fplt$year)
 
 pf_plt <- ggplot(pf_fplt, aes(x = field, y = number)) +
-  geom_col(aes(fill = year), position = "dodge") +
+  geom_col(aes(fill = year), position = "dodge", colour = "black") +
   theme_classic() +
   theme(legend.position = "top") +
   labs(
     x = "Field",
     y = "PhDs awarded to females"
   ) +
-  scale_y_continuous(expand=c(0,0))
+  scale_y_continuous(expand=c(0,0)) +
+  scale_fill_brewer(palette = "Greys")
 pf_plt
+
+ggsave(filename = "pf_plt.png", plot = pf_plt,
+  scale = 1, width = 7, height = 3, units = "in",
+  dpi = 300)
 ```
 
 
