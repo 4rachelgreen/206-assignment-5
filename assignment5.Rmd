@@ -328,6 +328,20 @@ AIC(salary_lm5) #9096
 Problem 4 (Michael):
 ```{r}
 
+fs_numonly <- fs %>%
+  select(years_since_PhD, years_faculty_service, salary)
+cor(fs_numonly)
+
+# relevel faculty_rank to assistant prof
+fs$faculty_rank <- factor(fs$faculty_rank)
+fs$faculty_rank <- fct_relevel(fs$faculty_rank, "AsstProf")
+
+
+# models
+predsalary1 <- lm(salary ~ faculty_rank + discipline + years_since_PhD + years_faculty_service + sex, data = fs)
+plot(predsalary1)
+
+# the residuals do not look homoskedastic to me.
 ```
 
 Problem 4 (Jeremy):
