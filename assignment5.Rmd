@@ -339,9 +339,23 @@ fs$faculty_rank <- fct_relevel(fs$faculty_rank, "AsstProf")
 
 # models
 predsalary1 <- lm(salary ~ faculty_rank + discipline + years_since_PhD + years_faculty_service + sex, data = fs)
-plot(predsalary1)
+plot(predsalary1, which=c(2,1))
 
-# the residuals do not look homoskedastic to me.
+# the residuals do not look homoskedastic to me. this will effect predictive capacity, but not necessarily coefficients. 
+
+fs_a <- fs %>%
+  filter(discipline == "A") 
+fs_b <- fs %>%
+  filter(discipline == "B")
+
+predsalary_a <- lm(salary ~ faculty_rank + years_since_PhD + years_faculty_service + sex, data = fs_a) # only theoretical
+plot(predsalary_a, which=c(2,1))
+
+predsalary_b <- lm(salary ~ faculty_rank + years_since_PhD + years_faculty_service + sex, data = fs_b) # only applied
+plot(predsalary_b, which=c(2,1))
+
+# heteroskedasticity seems to come mostly from applied faculty. Have two different models? 
+
 ```
 
 Problem 4 (Jeremy):
