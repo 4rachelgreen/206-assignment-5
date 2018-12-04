@@ -16,6 +16,7 @@ library(kableExtra)
 library(effsize)
 library(ggrepel)
 library(reshape2)
+library(stargazer)
 fs = read_csv("faculty_salary_data_2008_2009_survey.csv")
 ge = read_csv("grad_enrollment.csv")
 ms = read_csv("median_salary_doctoral_recipients.csv")
@@ -149,7 +150,7 @@ ge_plot
 
 
 Problem 2 (Rachel):
-```{r}
+```{r}##
 
 pf_fem <- pf %>% 
   filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F") %>%
@@ -218,7 +219,7 @@ ggsave(filename = "pf_plt.png", plot = pf_plt,
 
 
 Problem 3 (Rachel):
-```{r}
+```{r}#
 
 melt_ms <- melt(ms)
 
@@ -269,10 +270,10 @@ ms_post <- ms %>%
   rename(Male = employment_male, Female = employment_female) %>% 
   gather(key = sex, value = postdoc, 2:3)
 
-ms_joined <- merge(fs_emp, fs_post, by = c('field_of_study', 'sex'))
+ms_joined <- merge(ms_emp, ms_post, by = c('field_of_study', 'sex'))
 
 
-View (fs_joined)
+View (ms_joined)
 
 gender <- c("Female", "Male")
 sex_color <- c("white", "gray60")
@@ -382,6 +383,9 @@ AIC(salary_lm2) #9097
 AIC(salary_lm3) #9097
 AIC(salary_lm4) #9095
 AIC(salary_lm5) #9096
+
+lm_table <- stargazer(salary_lm2, type = "html", title = "Faculty Salary Linear Model", digits = 2, align = TRUE, dep.var.labels = "Salary", covariate.labels = c("Associate Professor", "Assistant Professor", "Years Faculty Service", "Sex", "Discipline", "Constant"), out="model.htm")
+lm_table
 ```
 
 Problem 4 (Michael):
