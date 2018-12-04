@@ -131,7 +131,8 @@ ge_fullpred <- cbind(ge_adddecyear, predict_m, predict_f)
 #ge_predm <- cbind(ge_year, predict_m)
 #ge_predf <- cbind(ge_year, predict_f)
 
-# plot
+lines <- c("Male"="steelblue3","Female"="tomato3")
+
 ge_plot <- ggplot(ge_fullpred, aes(x = year, y = total_females)) +
   geom_ribbon(aes(ymin = fit.lwr_f, ymax = fit.upr_f), fill = "tomato3", alpha = 0.35) +
   geom_ribbon(aes(ymin = fit.lwr_m, ymax = fit.upr_m), fill = "steelblue3", alpha = 0.35) +
@@ -141,11 +142,17 @@ ge_plot <- ggplot(ge_fullpred, aes(x = year, y = total_females)) +
   geom_line(aes(x = year, y = fit.fit_m), color = "steelblue3") +
   scale_x_continuous(limits = c(1965, 2015), expand=c(0,0)) +
   scale_y_continuous(limits = c(-100000, 2100000), expand=c(0,0)) +
-  labs(y = "Total enrollment", x = "Year") +
+  scale_colour_manual(name="Line Color",
+    values=c(myline1="red", myline2="blue")) +
+  labs(y = "Total graduate enrollment", x = "Year") +
   theme(legend.position = "top") +
   theme_classic()
 
 ge_plot
+
+ggsave(filename = "ge_plot.png", plot = ge_plot,
+  scale = 1, width = 7, height = 3, units = "in",
+  dpi = 300)
 ```
 
 
