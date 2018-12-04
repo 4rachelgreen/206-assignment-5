@@ -197,7 +197,14 @@ pf_f <- pf %>%
   spread(year, number) %>%
   select(-field)
 
+pf_m <- pf %>% 
+  filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "M") %>%
+  select(field, year, number) %>%
+  spread(year, number) %>%
+  select(-field)
+
 rownames(pf_f) <- c("physical_science", "engineering", "education", "humanities")
+rownames(pf_m) <- c("physical_science", "engineering", "education", "humanities")
 
 pf_chisqf <- chisq.test(pf_f)
 pf_chisqf
@@ -207,7 +214,29 @@ pf_fplt <- pf %>%
   select(field, year, number)
 pf_fplt$year <- as.character(pf_fplt$year)
 
+pf_mplt <- pf %>% 
+  filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "M") %>%
+  select(field, year, number)
+pf_mplt$year <- as.character(pf_mplt$year)
+
 pf_plt <- ggplot(pf_fplt, aes(x = field, y = number)) +
+  geom_col(aes(fill = year), position = "dodge", colour = "black") +
+  theme_classic() +
+  theme(legend.position = "top") +
+  labs(
+    x = "Field",
+    y = "PhDs awarded to females"
+  ) +
+  scale_y_continuous(limits = c(0, 4500), expand=c(0,0)) +
+  scale_x_discrete(labels = c("education","engineering","humanities","physical science")) +
+  scale_fill_brewer(palette = "Greys")
+pf_plt
+
+ggsave(filename = "pf_pltf.png", plot = pf_plt,
+  scale = 1, width = 7, height = 3, units = "in",
+  dpi = 300)
+
+pf_plt <- ggplot(pf_mplt, aes(x = field, y = number)) +
   geom_col(aes(fill = year), position = "dodge", colour = "black") +
   theme_classic() +
   theme(legend.position = "top") +
@@ -220,7 +249,7 @@ pf_plt <- ggplot(pf_fplt, aes(x = field, y = number)) +
   scale_fill_brewer(palette = "Greys")
 pf_plt
 
-ggsave(filename = "pf_plt.png", plot = pf_plt,
+ggsave(filename = "pf_pltm.png", plot = pf_plt,
   scale = 1, width = 7, height = 3, units = "in",
   dpi = 300)
 ```
