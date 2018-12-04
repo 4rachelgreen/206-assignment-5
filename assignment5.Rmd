@@ -25,6 +25,7 @@ pf = read_csv("phds_by_field_1985_2015.csv")
 
 Problem 1 (Jeremy):
 ```{r}
+
 total_males <- ge %>% 
   select(year, total_males) %>% 
   mutate(total = total_males) %>% # 
@@ -455,6 +456,34 @@ AIC(predsalary_b_simp1)
 
 Problem 4 (Jeremy):
 ```{r}
+lm_basic = lm(salary ~ discipline + faculty_rank + years_faculty_service + years_since_PhD + sex ,data = fs)
+vif(lm_basic) # correlation between years variables 
+
+lm2 = lm(salary ~ discipline + faculty_rank + years_since_PhD + sex ,data = fs)
+vif(lm2)
+plot(lm2)
+summary(lm2)
+
+
+fs_female = fs %>% 
+  filter(sex == "Female")
+fs_male = fs %>% 
+  filter(sex == "Male")
+
+fs_test = subset(fs, years_since_PhD < 40 | years_faculty_service < 36)
+
+#EXPLORING INTERACTIONS:
+explore_years_since_PhD = ggplot(data = fs_test, aes(x=years_since_PhD, y=salary, color=sex), alpha=.1) +
+  geom_point(shape=1) +
+    stat_smooth(aes(group = sex), method = "lm", formula = y ~ x, se = FALSE)
+
+explore_years_faculty_service = ggplot(data = fs_test, aes(x=years_faculty_service, y=salary, color=sex), alpha=.1) +
+  geom_point(shape=1) +
+    stat_smooth(aes(group = sex), method = "lm", formula = y ~ x, se = FALSE)
+
+explore_discipline = ggplot(data = fs_test, aes(x=discipline, y=salary, color=sex), alpha=.1) +
+  geom_point(shape=1) +
+    stat_smooth(aes(group = sex), method = "lm", formula = y ~ x, se = FALSE)
 
 ```
 
