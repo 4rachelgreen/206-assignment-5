@@ -140,7 +140,7 @@ ge_plot <- ggplot(ge_fullpred, aes(x = year, y = total_females)) +
   geom_point(aes(x = year, y = total_males), color = "steelblue3") + 
   geom_line(aes(x = year, y = fit.fit_f), color = "tomato2") +
   geom_line(aes(x = year, y = fit.fit_m), color = "steelblue3") +
-  scale_x_continuous(limits = c(1965, 2015), expand=c(0,0)) +
+  scale_x_continuous(limits = c(1965, 2018), expand=c(0,0)) +
   scale_y_continuous(limits = c(-100000, 2100000), expand=c(0,0)) +
   scale_colour_manual(name="Line Color",
     values=c(myline1="red", myline2="blue")) +
@@ -151,8 +151,8 @@ ge_plot <- ggplot(ge_fullpred, aes(x = year, y = total_females)) +
 ge_plot
 
 ggsave(filename = "ge_plot.png", plot = ge_plot,
-  scale = 1, width = 7, height = 3, units = "in",
-  dpi = 300)
+  scale = 1, width = 4.5, height = 3.375, units = "in",
+  dpi = 600)
 ```
 
 
