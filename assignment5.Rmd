@@ -15,6 +15,7 @@ library(knitr)
 library(kableExtra)
 library(effsize)
 library(ggrepel)
+library(reshape2)
 fs = read_csv("faculty_salary_data_2008_2009_survey.csv")
 ge = read_csv("grad_enrollment.csv")
 ms = read_csv("median_salary_doctoral_recipients.csv")
@@ -213,6 +214,8 @@ pf_plt
 Problem 3 (Rachel):
 ```{r}
 
+melt_ms <- melt(ms)
+
 #absolute difference in medians
 #Employed Male/Female
 emp_m_median <- median(ms$employment_male) #75167
@@ -249,6 +252,56 @@ effsize_emp = cohen.d(ms$employment_male,ms$employment_female) # d estimate = 0.
 effsize_post = cohen.d(ms$postdoc_male,ms$postdoc_female) # d estimate = 0.04 (negligible)
 
 #even though absolute difference is not significant, males are still paid a higher salary than females
+
+ms_emp <- ms %>% 
+  select(field_of_study, employment_male, employment_female) %>% 
+  rename(Male = employment_male, Female = employment_female) %>% 
+  gather(key = sex, value = employment, 2:3)
+
+ms_post <- ms %>% 
+  select(field_of_study, employment_male, employment_female) %>% 
+  rename(Male = employment_male, Female = employment_female) %>% 
+  gather(key = sex, value = postdoc, 2:3)
+
+ms_joined <- merge(fs_emp, fs_post, by = c('field_of_study', 'sex'))
+
+
+View (fs_joined)
+
+gender <- c("Female", "Male")
+sex_color <- c("white", "gray60")
+
+emp_med_plot <- ggplot(fs_joined, aes(x = sex, y = employment)) +
+  geom_boxplot(aes(fill = sex)) +
+  scale_fill_manual(values = sex_color) +
+  theme_classic() +
+  scale_x_discrete(labels = gender) +
+  labs(x = "Sex", y = "Median Employed Doctoral Recipient Salary (dollars) (n = 30)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+emp_med_plot
+
+
+post_med_plot <- ggplot(ms_joined, aes(x = sex, y = employment)) +
+  geom_boxplot(aes(fill = sex)) +
+  scale_fill_manual(values = sex_color) +
+  theme_classic() +
+  scale_x_discrete(labels = gender) +
+  labs(x = "Sex", y = "Median Doctoral Recipient Starting Salary (dollars) (n = 30)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+post_med_plot
+
+ms_plot <- ggplot(melt_ms, aes(x = variable, y = value)) +
+  geom_boxplot() +
+  labs(y = "Median Doctoral Recipient Starting Salary (dollars)", x = "") + 
+  scale_color_manual(values = c("white", "gray60", "white", "gray60"),
+  labels=c("Employed Males","Employed Females","Male Postdocs","Female Postdocs"), name = "Employment") +
+  scale_x_discrete(labels=c("Employed Males","Employed Females","Male Postdocs","Female Postdocs")) +
+  theme_classic()
+
+ms_plot
+
 ```
 Problem 3 (Jeremy):
 ```{r}
