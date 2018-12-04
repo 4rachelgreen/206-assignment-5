@@ -150,8 +150,7 @@ ge_plot
 
 
 Problem 2 (Rachel):
-```{r}##
-
+```{r}
 pf_fem <- pf %>% 
   filter(field == "physical_science" | field == "engineering" | field == "education" | field == "humanities", sex == "F") %>%
   select(field, year, number) %>%
@@ -181,6 +180,7 @@ phd_shifts
 #phd_chi <- chisq.test(pf_fem) 
 #phd_chi
 ```
+
 Problem 2 (Michael):
 ```{r}
 pf_f <- pf %>% 
@@ -219,8 +219,7 @@ ggsave(filename = "pf_plt.png", plot = pf_plt,
 
 
 Problem 3 (Rachel):
-```{r}#
-
+```{r}
 melt_ms <- melt(ms)
 
 #absolute difference in medians
@@ -312,20 +311,39 @@ ms_plot
 ```
 Problem 3 (Jeremy):
 ```{r}
+ms_long <- melt(ms, variable.name = "status", value.name = "salary") 
 
-hist_emp_m = ggplot(ms, aes(ms$employment_male)) + geom_histogram()
-hist_emp_f = ggplot(ms, aes(ms$employment_female)) + geom_histogram()
-hist_post_m = ggplot(ms, aes(ms$postdoc_male)) + geom_histogram()
-hist_post_f = ggplot(ms, aes(ms$postdoc_female)) + geom_histogram()
+ms_new <- ms_long %>% 
+    #mutate(sdp = case_when(smoke==0 ~ "nonsmoker", #case_when() if smoke = 1 then replace with "smoker" smoke==1 ~ "smoker")
+  mutate(sex = case_when(status == "employment_male" ~ "M",
+                         status == "postdoc_male" ~ "M",
+                         status == "employment_female" ~ "F",
+                         status == "postdoc_female" ~ "F")) %>% 
+  mutate(status = case_when(status == "employment_male" ~ "employed",
+                         status == "postdoc_male" ~ "postdoc",
+                         status == "employment_female" ~ "employed",
+                         status == "postdoc_female" ~ "postdoc"))
 
-ftest_emp = var.test(ms$employment_male,ms$employment_female) # p=.88 thus variances are equal
-ftest_post = var.test(ms$postdoc_male,ms$postdoc_female) # p=.85 thus variances are equal
+male_postdoc <- ms_new %>% 
+  filter(sex == "M", status == "postdoc") 
+female_postdoc <- ms_new %>% 
+  filter(sex == "F", status == "postdoc")
+male_employed <- ms_new %>% 
+  filter(sex == "M", status == "employed")
+female_employed <- ms_new %>% 
+  filter(sex == "F", status == "employed")
 
-ttest_emp = t.test(ms$employment_male,ms$employment_female, var.equal = T)
-ttest_emp
+postdoc_u <- wilcox.test(male_postdoc$salary, female_postdoc$salary) # p = 0.87
+# Median salary does not significantly differ between males and females starting postdoc positions in 2015.
+employed_u <- wilcox.test(male_employed$salary, female_employed$salary) # p = 0.33
+# Median salary does not significantly differ between males and females PhD recipients in non-postdoc employment positions.
 
-ttest_post = t.test(ms$postdoc_male,ms$postdoc_female, var.equal = T)
-ttest_post
+postdoc_d <- cohen.d(male_postdoc$salary, female_postdoc$salary) # negligible
+abs_postdoc <- median(male_postdoc$salary) - median(female_postdoc$salary) # males > females by $3000
+perc_postdoc <- (median(male_postdoc$salary) - median(female_postdoc$salary))/(median(female_postdoc$salary)) * 100 # male postdoc salary 6.7% higher than females
+employed_d <- cohen.d(male_employed$salary, female_employed$salary) # small
+abs_employed <- median(male_employed$salary) - median(female_employed$salary) # males > females by $3417
+perc_employed <- (median(male_employed$salary) - median(female_employed$salary))/(median(female_employed$salary)) * 100  # male employed salary 4.8% higher than females
 ```
 
 
