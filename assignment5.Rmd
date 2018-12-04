@@ -199,15 +199,21 @@ pf_fplt <- pf %>%
 pf_fplt$year <- as.character(pf_fplt$year)
 
 pf_plt <- ggplot(pf_fplt, aes(x = field, y = number)) +
-  geom_col(aes(fill = year), position = "dodge") +
+  geom_col(aes(fill = year), position = "dodge", colour = "black") +
   theme_classic() +
   theme(legend.position = "top") +
   labs(
     x = "Field",
     y = "PhDs awarded to females"
   ) +
-  scale_y_continuous(expand=c(0,0))
+  scale_y_continuous(expand=c(0,0)) +
+  scale_x_discrete(labels = c("education","engineering","humanities","physical science")) +
+  scale_fill_brewer(palette = "Greys")
 pf_plt
+
+ggsave(filename = "pf_plt.png", plot = pf_plt,
+  scale = 1, width = 7, height = 3, units = "in",
+  dpi = 300)
 ```
 
 
@@ -381,6 +387,48 @@ AIC(salary_lm5) #9096
 Problem 4 (Michael):
 ```{r}
 
+fs_numonly <- fs %>%
+  select(years_since_PhD, years_faculty_service, salary)
+cor(fs_numonly)
+
+# relevel faculty_rank to assistant prof
+fs$faculty_rank <- factor(fs$faculty_rank)
+fs$faculty_rank <- fct_relevel(fs$faculty_rank, "AsstProf")
+
+
+# models
+predsalary1 <- lm(salary ~ faculty_rank + discipline + years_since_PhD + years_faculty_service + sex, data = fs)
+plot(predsalary1, which=c(2,1))
+
+# the residuals do not look homoskedastic to me. this will effect predictive capacity, but not necessarily coefficients. 
+
+fs_a <- fs %>%
+  filter(discipline == "A") 
+fs_b <- fs %>%
+  filter(discipline == "B")
+
+predsalary_a <- lm(salary ~ faculty_rank + years_since_PhD + years_faculty_service + sex, data = fs_a) # only theoretical
+plot(predsalary_a, which=c(2,1))
+AIC(predsalary_a)
+
+predsalary_b <- lm(salary ~ faculty_rank + years_since_PhD + years_faculty_service + sex, data = fs_b) # only applied
+plot(predsalary_b, which=c(2,1))
+AIC(predsalary_b)
+
+# heteroskedasticity seems to come mostly from applied faculty. Have two different models? 
+# now take years since phd out
+
+predsalary_a_simp1 <- lm(salary ~ faculty_rank + years_faculty_service + sex, data = fs_a) # only theoretical
+plot(predsalary_a_simp1, which=c(2,1))
+AIC(predsalary_a_simp1)
+
+predsalary_b_simp1 <- lm(salary ~ faculty_rank + years_faculty_service + sex, data = fs_b) # only applied
+plot(predsalary_b_simp1, which=c(2,1))
+AIC(predsalary_b_simp1)
+
+
+# AIC is larger for theoretical, only slightly smaller for applied.
+# I think it is best to run different models for applied and theoretical, as their variances are different and they respond differently to years_since_phd and years_faculty_service
 ```
 
 Problem 4 (Jeremy):
